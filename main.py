@@ -1,5 +1,5 @@
 from pyrogram import Client, filters, idle
-from config import API_ID, API_HASH, TOKEN, sudofilter
+from config import API_ID, API_HASH, BOT_TOKEN
 import os, sys
 from tortoise import run_async
 from threading import Thread
@@ -11,7 +11,7 @@ bot = Client(
     ":memory:",
     api_id=API_ID,
     api_hash=API_HASH,
-    bot_token=TOKEN,
+    bot_token=BOT_TOKEN,
     plugins=dict(root="plugins"),
 )
 
@@ -24,7 +24,6 @@ def stop_and_restart():
 
 @bot.on_message(
     filters.command("r")
-    & sudofilter
     & ~filters.forwarded
     & ~filters.group
     & ~filters.edited
@@ -36,7 +35,7 @@ async def restart(bot, message):
     await msgtxt.edit_text("done")
 
 
-@bot.on_message(filters.command("ping") & sudofilter & filters.private)
+@bot.on_message(filters.command("ping") & filters.private)
 async def ping(bot, message):
     a = datetime.now()
     m = await message.reply_text("pong")
@@ -44,12 +43,7 @@ async def ping(bot, message):
     await m.edit_text(f"pong {(b - a).microseconds / 1000} ms")
 
 
-@bot.on_message(filters.command("bot_stats") & sudofilter)
-async def get_bot_stats(bot, message):
-    await message.reply(f"the bot have {await get_users_count()} users")
-
-
-@bot.on_message(filters.command("get_user_lang") & sudofilter)
+@bot.on_message(filters.command("get_user_lang"))
 async def get_lang_by_user_db(bot, message):
     if len(message.text.split()) > 1:
         chat_exists_check = await chat_exists(
