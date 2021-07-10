@@ -5,12 +5,3 @@ pytesseract
 Pillow
 py-multiapi
 tortoise-orm
-
-# optional for postgresql
-
-asyncpg
-
-# optional for mysql
-
-asyncmy
-aiomysql
